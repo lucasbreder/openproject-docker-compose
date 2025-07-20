@@ -40,7 +40,19 @@ services:
       POSTGRES_DB: openproject
     networks:
       - backend
-
+  proxy:
+    build:
+      context: ./proxy
+      args:
+        APP_HOST: web
+    image: openproject/proxy
+    <<: *restart_policy
+    ports:
+      - "${PORT:-8080}:80"
+    depends_on:
+      - web
+    networks:
+      - frontend
   cache:
     image: memcached
     <<: *restart_policy
