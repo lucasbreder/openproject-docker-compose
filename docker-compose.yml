@@ -30,7 +30,7 @@ x-op-app: &app
     - "opdata:/var/openproject/assets"
 services:
   db:
-    image: postgres:17
+    image: postgres:16
     <<: *restart_policy
     stop_grace_period: "3s"
     volumes:
