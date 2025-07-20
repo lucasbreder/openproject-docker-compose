@@ -17,13 +17,13 @@ x-op-app: &app
   environment:
     OPENPROJECT_HTTPS: "true"
     OPENPROJECT_HOST__NAME: "projetos.sudu.dev"
-    OPENPROJECT_HSTS: "false"
+    OPENPROJECT_HSTS: "true"
     RAILS_CACHE_STORE: "memcache"
     OPENPROJECT_CACHE__MEMCACHE__SERVER: "cache:11211"
     DATABASE_URL: "postgres://postgres:p4ssw0rd@db/openproject?pool=20&encoding=unicode&reconnect=true"
-    RAILS_MIN_THREADS: 8
-    RAILS_MAX_THREADS: 32
-    PORT: 3000
+    RAILS_MIN_THREADS: 4
+    RAILS_MAX_THREADS: 16
+    PORT: 0.0.0.0:3033
   volumes:
     - "opdata:/var/openproject/assets"
 
@@ -52,7 +52,7 @@ services:
     command: "bundle exec rails server -b 0.0.0.0" 
     ports:
       # EXPONDO A PORTA INTERNA PARA O COOLIFY
-      - "3000"
+      - "3033"
     networks:
       - frontend
       - backend
@@ -62,7 +62,7 @@ services:
       - seeder
     # healthcheck:
     #   # ATUALIZANDO O HEALTHCHECK PARA A PORTA CORRETA
-    #   test: ["CMD", "curl", "-f", "http://localhost:3000${OPENPROJECT_RAILS__RELATIVE__URL__ROOT:-}/health_checks/default"]
+    #   test: ["CMD", "curl", "-f", "http://localhost:3033${OPENPROJECT_RAILS__RELATIVE__URL__ROOT:-}/health_checks/default"]
     #   interval: 10s
     #   timeout: 3s
     #   retries: 3
