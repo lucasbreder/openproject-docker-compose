@@ -5,7 +5,7 @@ networks:
   backend:
 
 volumes:
-  pgdata:
+  pgdata17:
   opdata:
 
 x-op-restart-policy: &restart_policy
@@ -30,7 +30,7 @@ x-op-app: &app
     - "opdata:/var/openproject/assets"
 services:
   db:
-    image: postgres:16
+    image: postgres:17
     <<: *restart_policy
     stop_grace_period: "3s"
     volumes:
