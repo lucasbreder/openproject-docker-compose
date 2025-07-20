@@ -15,16 +15,14 @@ x-op-image: &image
 x-op-app: &app
   <<: [*image, *restart_policy]
   environment:
-    # As variáveis de ambiente do seu arquivo .env serão injetadas aqui pelo Coolify
-    # Garanta que PORT=3033 esteja no .env ou nas variáveis de ambiente do Coolify
     OPENPROJECT_HTTPS: "true"
     OPENPROJECT_HOST__NAME: "projetos.sudu.dev"
-    OPENPROJECT_HSTS: "true"
+    OPENPROJECT_HSTS: "false"
     RAILS_CACHE_STORE: "memcache"
     OPENPROJECT_CACHE__MEMCACHE__SERVER: "cache:11211"
     DATABASE_URL: "postgres://postgres:p4ssw0rd@db/openproject?pool=20&encoding=unicode&reconnect=true"
-    RAILS_MIN_THREADS: 4
-    RAILS_MAX_THREADS: 16
+    RAILS_MIN_THREADS: 8
+    RAILS_MAX_THREADS: 32
     PORT: 3000
   volumes:
     - "opdata:/var/openproject/assets"
@@ -62,13 +60,13 @@ services:
       - db
       - cache
       - seeder
-    healthcheck:
-      # ATUALIZANDO O HEALTHCHECK PARA A PORTA CORRETA
-      test: ["CMD", "curl", "-f", "http://localhost:3000${OPENPROJECT_RAILS__RELATIVE__URL__ROOT:-}/health_checks/default"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
+    # healthcheck:
+    #   # ATUALIZANDO O HEALTHCHECK PARA A PORTA CORRETA
+    #   test: ["CMD", "curl", "-f", "http://localhost:3000${OPENPROJECT_RAILS__RELATIVE__URL__ROOT:-}/health_checks/default"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 3
+    #   start_period: 30s
   
   # Outros serviços (worker, cron, etc.) podem ser mantidos como estavam, pois não precisam de porta externa.
   worker:
