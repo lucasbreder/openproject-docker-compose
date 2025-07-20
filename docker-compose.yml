@@ -15,18 +15,19 @@ x-op-image: &image
 x-op-app: &app
   <<: [*image, *restart_policy]
   environment:
-    OPENPROJECT_HTTPS: "true"
-    OPENPROJECT_HOST__NAME: "projetos.sudu.dev"
-    OPENPROJECT_HSTS: "true"
+    OPENPROJECT_HTTPS: "${OPENPROJECT_HTTPS:-true}"
+    OPENPROJECT_HOST__NAME: "${OPENPROJECT_HOST__NAME:-localhost:8080}"
+    OPENPROJECT_HSTS: "${OPENPROJECT_HSTS:-true}"
     RAILS_CACHE_STORE: "memcache"
     OPENPROJECT_CACHE__MEMCACHE__SERVER: "cache:11211"
-    DATABASE_URL: "postgres://postgres:p4ssw0rd@db/openproject?pool=20&encoding=unicode&reconnect=true"
-    RAILS_MIN_THREADS: 4
-    RAILS_MAX_THREADS: 16
-    PORT: 3033
+    OPENPROJECT_RAILS__RELATIVE__URL__ROOT: "${OPENPROJECT_RAILS__RELATIVE__URL__ROOT:-}"
+    DATABASE_URL: "${DATABASE_URL:-postgres://postgres:p4ssw0rd@db/openproject?pool=20&encoding=unicode&reconnect=true}"
+    RAILS_MIN_THREADS: ${RAILS_MIN_THREADS:-4}
+    RAILS_MAX_THREADS: ${RAILS_MAX_THREADS:-16}
+    IMAP_ENABLED: "${IMAP_ENABLED:-false}"
+    PORT: "${PORT:-8080}"
   volumes:
-    - "opdata:/var/openproject/assets"
-
+    - "${OPDATA:-opdata}:/var/openproject/assets"
 services:
   db:
     image: postgres:17
@@ -48,10 +49,8 @@ services:
 
   web:
     <<: *app
-    # SOBRESCREVENDO O COMANDO PARA USAR A PORTA DEFINIDA PELA VARIÁVEL PORT
     command: "bundle exec rails server -b 0.0.0.0" 
     ports:
-      # EXPONDO A PORTA INTERNA PARA O COOLIFY
       - "3033"
     networks:
       - frontend
