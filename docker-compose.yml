@@ -27,7 +27,7 @@ x-op-app: &app
     IMAP_ENABLED: "${IMAP_ENABLED:-false}"
     PORT: "${PORT:-8080}"
   volumes:
-    - "${OPDATA:-opdata}:/var/openproject/assets"
+    - "opdata:/var/openproject/assets"
 services:
   db:
     image: postgres:17
